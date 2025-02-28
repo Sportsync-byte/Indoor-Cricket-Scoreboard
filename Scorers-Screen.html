@@ -10,6 +10,7 @@
             text-align: center;
             background: #222;
             color: white;
+            padding: 20px;
         }
         .container {
             max-width: 500px;
@@ -19,66 +20,109 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
-        .btn {
-            font-size: 20px;
+        .input-group {
+            margin: 10px 0;
+        }
+        input, button {
+            font-size: 18px;
             padding: 10px;
             margin: 5px;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
         }
-        .run-btn { background: #FF6600; color: white; }
-        .wicket-btn { background: #FF0000; color: white; }
+        .update-btn { background: #FF6600; color: white; cursor: pointer; }
+        .timer-btn { background: #00CC66; color: white; cursor: pointer; }
+        .reset-btn { background: #FF0000; color: white; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Scorers Screen</h1>
-        <button class="run-btn" onclick="addRuns(1)">+1 Run</button>
-        <button class="run-btn" onclick="addRuns(2)">+2 Runs</button>
-        <button class="run-btn" onclick="addRuns(4)">+4 Runs</button>
-        <button class="run-btn" onclick="addRuns(6)">+6 Runs</button>
-        <button class="wicket-btn" onclick="addWicket()">Wicket</button>
-        <button class="run-btn" onclick="nextPartnership()">Next Partnership</button>
+
+        <div class="input-group">
+            <label>Team A Name:</label>
+            <input type="text" id="teamAName" placeholder="Enter Team A">
+            <label>Team B Name:</label>
+            <input type="text" id="teamBName" placeholder="Enter Team B">
+            <button class="update-btn" onclick="updateTeams()">Update Teams</button>
+        </div>
+
+        <div class="input-group">
+            <label>Batsman 1:</label>
+            <input type="text" id="batsman1Name" placeholder="Enter Batsman 1">
+            <label>Batsman 2:</label>
+            <input type="text" id="batsman2Name" placeholder="Enter Batsman 2">
+            <button class="update-btn" onclick="updateBatsmen()">Update Batsmen</button>
+        </div>
+
+        <div class="input-group">
+            <label>Bowler:</label>
+            <input type="text" id="bowlerName" placeholder="Enter Bowler">
+            <button class="update-btn" onclick="updateBowler()">Update Bowler</button>
+        </div>
+
+        <div class="input-group">
+            <label>Manually Set Timer (MM:SS):</label>
+            <input type="text" id="manualTimer" placeholder="10:00">
+            <button class="timer-btn" onclick="setManualTimer()">Set Timer</button>
+        </div>
+
+        <div class="input-group">
+            <button class="update-btn" onclick="addRuns(1)">+1 Run</button>
+            <button class="update-btn" onclick="addRuns(2)">+2 Runs</button>
+            <button class="update-btn" onclick="addRuns(3)">+3 Runs</button>
+            <button class="update-btn" onclick="addRuns(4)">+4 Runs</button>
+            <button class="update-btn" onclick="addRuns(6)">+6 Runs</button>
+            <button class="reset-btn" onclick="addWicket()">Wicket (-5)</button>
+        </div>
+
+        <button class="reset-btn" onclick="resetGame()">Reset Game</button>
     </div>
 
     <script>
-        let scoreData = {
-            battingTeam: "Team A",
-            totalScore: 0,
-            wickets: 0,
-            partnershipIndex: 0,
-            partnershipRuns: 0,
-            timer: "10:00"
-        };
+        let scoreboardURL = "https://sportsync-byte.github.io/Indoor-Cricket-Scoreboard/scoreboard-data.json";
+
+        function updateTeams() {
+            let teamA = document.getElementById("teamAName").value;
+            let teamB = document.getElementById("teamBName").value;
+            sendData({ teamA, teamB });
+        }
+
+        function updateBatsmen() {
+            let batsman1 = document.getElementById("batsman1Name").value;
+            let batsman2 = document.getElementById("batsman2Name").value;
+            sendData({ batsman1, batsman2 });
+        }
+
+        function updateBowler() {
+            let bowler = document.getElementById("bowlerName").value;
+            sendData({ bowler });
+        }
 
         function addRuns(runs) {
-            scoreData.totalScore += runs;
-            scoreData.partnershipRuns += runs;
-            updateServer();
+            sendData({ runs });
         }
 
         function addWicket() {
-            scoreData.wickets += 1;
-            nextPartnership();
-            updateServer();
+            sendData({ wicket: true });
         }
 
-        function nextPartnership() {
-            if (scoreData.partnershipIndex < 2) {
-                scoreData.partnershipIndex++;
-                scoreData.partnershipRuns = 0;
-            }
-            updateServer();
+        function setManualTimer() {
+            let timerValue = document.getElementById("manualTimer").value;
+            sendData({ timer: timerValue });
         }
 
-        function updateServer() {
-            fetch('https://your-server.com/update-scoreboard', {
+        function resetGame() {
+            sendData({ reset: true });
+        }
+
+        function sendData(update) {
+            fetch(scoreboardURL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(scoreData)
-            });
+                body: JSON.stringify(update)
+            }).catch(error => console.error("Error:", error));
         }
     </script>
 
