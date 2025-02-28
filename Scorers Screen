@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scorers Screen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #222;
+            color: white;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        .btn {
+            font-size: 20px;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .run-btn { background: #FF6600; color: white; }
+        .wicket-btn { background: #FF0000; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Scorers Screen</h1>
+        <button class="run-btn" onclick="addRuns(1)">+1 Run</button>
+        <button class="run-btn" onclick="addRuns(2)">+2 Runs</button>
+        <button class="run-btn" onclick="addRuns(4)">+4 Runs</button>
+        <button class="run-btn" onclick="addRuns(6)">+6 Runs</button>
+        <button class="wicket-btn" onclick="addWicket()">Wicket</button>
+        <button class="run-btn" onclick="nextPartnership()">Next Partnership</button>
+    </div>
+
+    <script>
+        let scoreData = {
+            battingTeam: "Team A",
+            totalScore: 0,
+            wickets: 0,
+            partnershipIndex: 0,
+            partnershipRuns: 0,
+            timer: "10:00"
+        };
+
+        function addRuns(runs) {
+            scoreData.totalScore += runs;
+            scoreData.partnershipRuns += runs;
+            updateServer();
+        }
+
+        function addWicket() {
+            scoreData.wickets += 1;
+            nextPartnership();
+            updateServer();
+        }
+
+        function nextPartnership() {
+            if (scoreData.partnershipIndex < 2) {
+                scoreData.partnershipIndex++;
+                scoreData.partnershipRuns = 0;
+            }
+            updateServer();
+        }
+
+        function updateServer() {
+            fetch('https://your-server.com/update-scoreboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(scoreData)
+            });
+        }
+    </script>
+
+</body>
+</html>
