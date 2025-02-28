@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indoor Cricket Scoreboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #003366;
+            color: white;
+        }
+        .scoreboard {
+            max-width: 700px;
+            margin: auto;
+            padding: 20px;
+            background: #222;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        .team {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .score {
+            font-size: 50px;
+            font-weight: bold;
+        }
+        .info {
+            font-size: 20px;
+        }
+        .timer {
+            font-size: 30px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scoreboard">
+        <h1>Indoor Cricket Scoreboard</h1>
+        <div class="team" id="battingTeam">Batting Team</div>
+        <div class="score" id="totalScore">0</div>
+        
+        <div class="info" id="partnership">Partnership 1: 0</div>
+        <div class="info" id="wickets">Wickets: 0</div>
+
+        <div class="timer" id="timer">10:00</div>
+    </div>
+
+    <script>
+        function updateScoreboard() {
+            fetch('https://your-server.com/scoreboard-data.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("battingTeam").innerText = data.battingTeam;
+                document.getElementById("totalScore").innerText = data.totalScore;
+                document.getElementById("partnership").innerText = `Partnership ${data.partnershipIndex + 1}: ${data.partnershipRuns}`;
+                document.getElementById("wickets").innerText = `Wickets: ${data.wickets}`;
+                document.getElementById("timer").innerText = data.timer;
+            });
+        }
+
+        setInterval(updateScoreboard, 2000);
+    </script>
+
+</body>
+</html>
