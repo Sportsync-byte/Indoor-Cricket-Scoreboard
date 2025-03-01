@@ -50,21 +50,9 @@
             font-size: 30px;
             margin: 20px 0;
         }
-        .buttons button {
-            font-size: 18px;
-            padding: 10px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .run-btn { background: #FF6600; color: white; }
-        .wicket-btn { background: #FF0000; color: white; }
-        .timer-btn { background: #00CC66; color: white; }
-        .reset-btn { background: #FF0000; color: white; }
     </style>
 </head>
-<body>
+<body onload="openScorersScreen()">
 
     <div class="scoreboard">
         <h1>Indoor Cricket Scoreboard</h1>
@@ -89,97 +77,11 @@
         <div class="player-info">
             Bowler: <span id="bowler">---</span> | Bowling Figures: <span id="bowlingFigure">0-0-0</span>
         </div>
-
-        <button class="run-btn" onclick="addRuns(1)">+1</button>
-        <button class="run-btn" onclick="addRuns(2)">+2</button>
-        <button class="run-btn" onclick="addRuns(3)">+3</button>
-        <button class="run-btn" onclick="addRuns(4)">+4</button>
-        <button class="run-btn" onclick="addRuns(6)">+6</button>
-        <button class="wicket-btn" onclick="addWicket()">Wicket (-5)</button>
-
-        <div class="timer" id="timer">10:00</div>
-        <button class="timer-btn" onclick="startTimer()">Start</button>
-        <button class="timer-btn" onclick="stopTimer()">Stop</button>
-        <button class="reset-btn" onclick="resetGame()">Reset</button>
     </div>
 
     <script>
-        let totalScore = 0;
-        let partnerships = [0, 0, 0, 0];
-        let currentPartnership = 0;
-        let wickets = 0;
-        let bowlerFigures = [0, 0, 0]; // [Overs, Runs Conceded, Wickets]
-        let batsmen = ["Batsman 1", "Batsman 2"];
-        let bowler = "Bowler Name";
-        let timerInterval;
-        let timeLeft = 600;
-
-        function addRuns(runs) {
-            totalScore = Math.max(0, totalScore + runs);
-            partnerships[currentPartnership] = Math.max(0, partnerships[currentPartnership] + runs);
-            bowlerFigures[1] += runs; // Runs conceded
-
-            document.getElementById("totalScore").innerText = totalScore;
-            updatePartnerships();
-            updateBowlingFigures();
-        }
-
-        function addWicket() {
-            wickets += 1;
-            bowlerFigures[2] += 1; // Increase wickets count
-            if (currentPartnership < 3) {
-                currentPartnership++;
-            }
-            updatePartnerships();
-            updateBowlingFigures();
-        }
-
-        function updatePartnerships() {
-            document.getElementById("partnership1").innerText = partnerships[0];
-            document.getElementById("partnership2").innerText = partnerships[1];
-            document.getElementById("partnership3").innerText = partnerships[2];
-            document.getElementById("partnership4").innerText = partnerships[3];
-        }
-
-        function updateBowlingFigures() {
-            document.getElementById("bowlingFigure").innerText = `${bowlerFigures[0]}-${bowlerFigures[1]}-${bowlerFigures[2]}`;
-        }
-
-        function startTimer() {
-            if (timerInterval) return;
-            timerInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    updateTimerDisplay();
-                } else {
-                    clearInterval(timerInterval);
-                }
-            }, 1000);
-        }
-
-        function stopTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
-
-        function resetGame() {
-            totalScore = 0;
-            partnerships = [0, 0, 0, 0];
-            currentPartnership = 0;
-            wickets = 0;
-            bowlerFigures = [0, 0, 0];
-            timeLeft = 600;
-            updateTimerDisplay();
-            document.getElementById("totalScore").innerText = totalScore;
-            updatePartnerships();
-            updateBowlingFigures();
-            stopTimer();
-        }
-
-        function updateTimerDisplay() {
-            let minutes = Math.floor(timeLeft / 60);
-            let seconds = timeLeft % 60;
-            document.getElementById("timer").innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        function openScorersScreen() {
+            window.open("scorers-screen.html", "_blank");
         }
     </script>
 
